@@ -1,72 +1,298 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auto WhatsApp Launcher</title>
+  <title>WhatsApp Direct & Automation Hub</title>
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+            }
+          }
+        }
+      }
+    }
+  </script>
   <style>
-    body { font-family: sans-serif; background-color: #0b0f19; color: #f3f4f6; }
-    .glass { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #090d16;
+      color: #f3f4f6;
+    }
+    .glass-card {
+      background: rgba(17, 24, 39, 0.65);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glow-blur {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(130px);
+      pointer-events: none;
+      z-index: 0;
+    }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+<body class="min-h-screen relative flex flex-col items-center justify-between p-4 sm:p-6 overflow-x-hidden">
 
-  <div class="w-full max-w-md glass p-6 sm:p-8 rounded-2xl shadow-2xl space-y-6">
+  <!-- Ambient background lighting -->
+  <div class="glow-blur w-96 h-96 bg-emerald-600/15 top-[-100px] left-[-100px]"></div>
+  <div class="glow-blur w-96 h-96 bg-cyan-600/10 bottom-[-100px] right-[-100px]"></div>
+
+  <!-- Header Navigation -->
+  <header class="w-full max-w-4xl flex items-center justify-between py-4 z-10">
     <div class="flex items-center space-x-3">
-      <div class="p-3 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-        <i data-lucide="bot" class="w-6 h-6"></i>
+      <div class="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+        <i data-lucide="send" class="w-6 h-6"></i>
       </div>
       <div>
-        <h2 class="text-xl font-bold text-white">WhatsApp Auto-Sender</h2>
-        <p class="text-xs text-slate-400">Triggers Python backend to open & send</p>
+        <h1 class="text-lg font-bold text-white tracking-wide">WhatsApp AutoHub</h1>
+        <p class="text-xs text-slate-400">Direct Messenger & Automation Control</p>
       </div>
     </div>
 
-    <form id="wa-form" class="space-y-4">
+    <!-- Server Status Indicator -->
+    <div id="status-badge" class="flex items-center space-x-2 px-3 py-1.5 rounded-full glass-card text-xs font-medium border border-slate-700/50">
+      <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" id="status-dot"></span>
+      <span class="text-slate-300" id="status-text">Checking Python Server...</span>
+    </div>
+  </header>
+
+  <!-- Main Grid Content -->
+  <main class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-12 gap-6 my-auto z-10">
+    
+    <!-- Left Column: Send Form -->
+    <section class="md:col-span-7 glass-card p-6 sm:p-8 rounded-2xl shadow-2xl space-y-6 flex flex-col justify-between">
       <div>
-        <label class="block text-xs font-medium text-slate-300 mb-1">Phone Number (with Country Code)</label>
-        <div class="relative">
-          <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">+</span>
-          <input type="tel" id="phone" required placeholder="923001234567" class="w-full pl-8 pr-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white focus:outline-none focus:border-emerald-500">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-semibold text-white flex items-center gap-2">
+            <i data-lucide="message-square" class="w-5 h-5 text-emerald-400"></i>
+            New Message
+          </h2>
+          <span class="text-[11px] px-2.5 py-1 rounded-md bg-slate-800 text-slate-400 border border-slate-700">Auto-Detect Mode</span>
+        </div>
+
+        <form id="wa-form" class="space-y-5">
+          <!-- Phone Number Input -->
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1.5">Recipient Phone Number</label>
+            <div class="relative">
+              <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-semibold text-sm">+</span>
+              <input 
+                type="tel" 
+                id="phone" 
+                required 
+                placeholder="923001234567 or 14155552671" 
+                class="w-full pl-8 pr-4 py-3 rounded-xl bg-slate-900/90 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition"
+              >
+            </div>
+            <p class="text-[11px] text-slate-500 mt-1">Include country code without spaces or dashes (e.g., 92300...)</p>
+          </div>
+
+          <!-- Message Input -->
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1.5">Message Content</label>
+            <textarea 
+              id="message" 
+              rows="4" 
+              required 
+              placeholder="Type your message here..." 
+              class="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition resize-none"
+            ></textarea>
+          </div>
+
+          <!-- Submit Button -->
+          <button 
+            type="submit" 
+            id="send-btn" 
+            class="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-green-500 hover:from-emerald-500 hover:to-green-400 text-white font-semibold text-sm shadow-lg shadow-emerald-600/20 transition flex items-center justify-center space-x-2"
+          >
+            <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+            <span id="btn-text">Execute Auto-Send</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Action Response Alert Box -->
+      <div id="alert-box" class="hidden p-3.5 rounded-xl border text-xs flex items-start space-x-2">
+        <i data-lucide="info" class="w-4 h-4 shrink-0 mt-0.5"></i>
+        <div id="alert-text"></div>
+      </div>
+    </section>
+
+    <!-- Right Column: Setup & Firebase Instructions -->
+    <section class="md:col-span-5 glass-card p-6 rounded-2xl flex flex-col justify-between space-y-4">
+      <div>
+        <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+          <i data-lucide="terminal" class="w-4 h-4 text-emerald-400"></i>
+          Automation Workflow
+        </h3>
+        <p class="text-xs text-slate-400 leading-relaxed mb-4">
+          Browsers cannot open local <code>.py</code> files directly due to OS security boundaries. Choose one of two methods below to trigger Python automatically:
+        </p>
+
+        <!-- Method Tabs / Cards -->
+        <div class="space-y-3">
+          <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1">
+            <div class="flex items-center justify-between text-xs font-medium text-emerald-400">
+              <span>Method A: Auto Startup (Easiest)</span>
+              <i data-lucide="power" class="w-3.5 h-3.5"></i>
+            </div>
+            <p class="text-[11px] text-slate-400">
+              Add a batch launcher to your Windows Startup folder so <code>server.py</code> runs silently in the background when your laptop turns on.
+            </p>
+          </div>
+
+          <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1">
+            <div class="flex items-center justify-between text-xs font-medium text-cyan-400">
+              <span>Method B: Cloud Listener (Firebase)</span>
+              <i data-lucide="cloud" class="w-3.5 h-3.5"></i>
+            </div>
+            <p class="text-[11px] text-slate-400">
+              Send messages from anywhere outside! Python listens to Firestore database updates and triggers WhatsApp when you submit from your phone.
+            </p>
+          </div>
         </div>
       </div>
 
-      <div>
-        <label class="block text-xs font-medium text-slate-300 mb-1">Message</label>
-        <textarea id="message" rows="4" required placeholder="Type your message..." class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white focus:outline-none focus:border-emerald-500 resize-none"></textarea>
+      <!-- Help Toggle Modal Button -->
+      <button 
+        onclick="toggleModal()"
+        class="w-full py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition flex items-center justify-center space-x-2"
+      >
+        <i data-lucide="book-open" class="w-4 h-4"></i>
+        <span>View Full Setup Commands</span>
+      </button>
+    </section>
+  </main>
+
+  <!-- Full Setup Instructions Modal -->
+  <div id="guide-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-card max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 sm:p-8 rounded-2xl space-y-6 border border-slate-700">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i data-lucide="cpu" class="w-5 h-5 text-emerald-400"></i>
+          How to Automate Server Opening
+        </h3>
+        <button onclick="toggleModal()" class="text-slate-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
       </div>
 
-      <button type="submit" id="send-btn" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-green-500 hover:from-emerald-500 hover:to-green-400 text-white font-semibold text-sm shadow-lg shadow-emerald-600/20 transition flex items-center justify-center space-x-2">
-        <i data-lucide="send" class="w-4 h-4"></i>
-        <span>Trigger Auto Send</span>
-      </button>
-    </form>
+      <div class="space-y-6 text-xs text-slate-300">
+        <!-- Step 1 -->
+        <div class="space-y-2">
+          <h4 class="text-sm font-semibold text-emerald-400">1. Automatic Laptop Startup (Recommended)</h4>
+          <p class="text-slate-400">Make <code>server.py</code> automatically start in the background when you turn on your laptop:</p>
+          <ol class="list-decimal pl-5 space-y-1.5 text-slate-300">
+            <li>Press <kbd class="px-1.5 py-0.5 bg-slate-800 rounded">Win + R</kbd>, type <code>shell:startup</code> and press Enter.</li>
+            <li>In that folder, create a new text file named <code>run_whatsapp.bat</code>.</li>
+            <li>Paste the following code into the file and save:
+              <pre class="mt-1 p-2.5 rounded-lg bg-slate-950 text-emerald-300 font-mono text-[11px] overflow-x-auto">@echo off
+py "C:\path\to\your\server.py"
+pause</pre>
+            </li>
+          </ol>
+        </div>
 
-    <div id="status" class="text-xs text-center hidden"></div>
+        <!-- Step 2 -->
+        <div class="space-y-2 border-t border-slate-800 pt-4">
+          <h4 class="text-sm font-semibold text-cyan-400">2. Remote Control via Firebase (When Away)</h4>
+          <p class="text-slate-400">If you want to send messages from outside using your smartphone:</p>
+          <ul class="list-disc pl-5 space-y-1.5 text-slate-300">
+            <li>Your HTML page writes a document to Firestore: <code>db.collection('queue').add({ phone, message })</code></li>
+            <li>Your Python script on your laptop runs <code>firestore.on_snapshot()</code> to listen for new entries in real time.</li>
+            <li>When you submit on mobile, Python detects the new entry on your laptop and triggers WhatsApp instantly!</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pt-2 text-right">
+        <button onclick="toggleModal()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs rounded-xl">Got it</button>
+      </div>
+    </div>
   </div>
 
+  <!-- Footer -->
+  <footer class="w-full max-w-4xl text-center py-4 text-xs text-slate-500 z-10">
+    WhatsApp Direct Automation Tool &copy; 2026
+  </footer>
+
   <script>
+    let isServerRunning = false;
+
     document.addEventListener("DOMContentLoaded", () => {
       lucide.createIcons();
+      checkServerStatus();
 
-      document.getElementById("wa-form").addEventListener("submit", async (e) => {
-        e.preventDefault();
+      // Periodically check python backend status every 8 seconds
+      setInterval(checkServerStatus, 8000);
 
-        const btn = document.getElementById("send-btn");
-        const status = document.getElementById("status");
-        let phone = document.getElementById("phone").value.replace(/[^0-9]/g, '');
-        const message = document.getElementById("message").value;
+      const form = document.getElementById("wa-form");
+      form.addEventListener("submit", handleFormSubmit);
+    });
 
-        btn.disabled = true;
-        btn.innerText = "Opening WhatsApp & Sending...";
-        status.innerText = "Sending command to local Python server...";
-        status.className = "text-xs text-center text-amber-400";
-        status.classList.remove("hidden");
+    // Check if server.py is active on http://localhost:5000
+    async function checkServerStatus() {
+      const dot = document.getElementById("status-dot");
+      const text = document.getElementById("status-text");
+
+      try {
+        // Attempt fetch to backend
+        const res = await fetch("http://localhost:5000/send-whatsapp", { method: "OPTIONS" }).catch(() => null);
+        
+        // If server responds or CORS preflight exists
+        isServerRunning = true;
+        dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]";
+        text.innerText = "Python Backend Active";
+        text.className = "text-emerald-300 font-medium";
+      } catch (err) {
+        isServerRunning = false;
+        dot.className = "w-2.5 h-2.5 rounded-full bg-amber-500";
+        text.innerText = "Fallback Direct Link Mode";
+        text.className = "text-slate-400";
+      }
+    }
+
+    async function handleFormSubmit(e) {
+      e.preventDefault();
+
+      const btn = document.getElementById("send-btn");
+      const btnText = document.getElementById("btn-text");
+      const alertBox = document.getElementById("alert-box");
+      const alertText = document.getElementById("alert-text");
+
+      let phone = document.getElementById("phone").value.replace(/[^0-9]/g, '');
+      const message = document.getElementById("message").value.trim();
+
+      if (!phone) {
+        showAlert("Please enter a valid phone number with country code.", "error");
+        return;
+      }
+
+      btn.disabled = true;
+      btnText.innerText = "Processing...";
+
+      if (isServerRunning) {
+        // Option 1: Trigger Python Backend directly
+        showAlert("Sending payload to local Python automation script...", "info");
 
         try {
-          // Send request to Python server running on your laptop
           const res = await fetch("http://localhost:5000/send-whatsapp", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -76,22 +302,52 @@
           const data = await res.json();
 
           if (res.ok) {
-            status.innerText = "WhatsApp opened and message sent!";
-            status.className = "text-xs text-center text-emerald-400";
+            showAlert("Command sent! Python opened WhatsApp & dispatched message.", "success");
             document.getElementById("wa-form").reset();
           } else {
-            status.innerText = "Server Error: " + data.message;
-            status.className = "text-xs text-center text-rose-400";
+            showAlert("Server error: " + (data.message || "Failed to execute"), "error");
           }
         } catch (err) {
-          status.innerText = "Could not connect to Python script! Make sure 'python server.py' is running.";
-          status.className = "text-xs text-center text-rose-400";
-        } finally {
-          btn.disabled = false;
-          btn.innerText = "Trigger Auto Send";
+          showAlert("Connection error. Launching direct WhatsApp tab fallback...", "error");
+          launchDirectWhatsApp(phone, message);
         }
-      });
-    });
+      } else {
+        // Option 2: Fallback when Python server isn't running
+        showAlert("Python server offline. Opening WhatsApp Web directly...", "info");
+        launchDirectWhatsApp(phone, message);
+      }
+
+      btn.disabled = false;
+      btnText.innerText = "Execute Auto-Send";
+    }
+
+    function launchDirectWhatsApp(phone, message) {
+      const encodedMsg = encodeURIComponent(message);
+      const url = `https://wa.me/${phone}?text=${encodedMsg}`;
+      window.open(url, '_blank');
+    }
+
+    function showAlert(msg, type) {
+      const alertBox = document.getElementById("alert-box");
+      const alertText = document.getElementById("alert-text");
+
+      alertBox.classList.remove("hidden", "bg-emerald-500/10", "border-emerald-500/30", "text-emerald-300", "bg-rose-500/10", "border-rose-500/30", "text-rose-300", "bg-amber-500/10", "border-amber-500/30", "text-amber-300");
+
+      if (type === "success") {
+        alertBox.classList.add("bg-emerald-500/10", "border-emerald-500/30", "text-emerald-300");
+      } else if (type === "error") {
+        alertBox.classList.add("bg-rose-500/10", "border-rose-500/30", "text-rose-300");
+      } else {
+        alertBox.classList.add("bg-amber-500/10", "border-amber-500/30", "text-amber-300");
+      }
+
+      alertText.innerText = msg;
+    }
+
+    function toggleModal() {
+      const modal = document.getElementById("guide-modal");
+      modal.classList.toggle("hidden");
+    }
   </script>
 </body>
 </html>
