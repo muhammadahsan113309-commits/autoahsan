@@ -168,7 +168,7 @@
         </button>
       </div>
 
-      <p class="text-sm text-slate-400">Enter your secure passkey to open management panel.</p>
+      <p class="text-sm text-slate-400">Enter your passkey to open the management panel.</p>
 
       <form id="passkey-form" class="space-y-4">
         <div>
@@ -271,7 +271,7 @@
   <!-- FIREBASE MODULE & APPLICATION SCRIPT -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue, set, push, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { getFirestore, collection, onSnapshot, doc, setDoc, addDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     // Reakweb Firebase Configuration
@@ -285,7 +285,8 @@
       appId: "1:228639861953:web:2941663bb550703b61b840"
     };
 
-    // Correct SHA-256 hash for password: ahsan0315
+    // Raw passkey fallback + SHA-256 hash match
+    const PLAIN_PASSKEY = "ahsan0315";
     const ADMIN_PASSKEY_HASH = "c9cd9665bc8ea0a3c2bfba617c09c25f1b62f83196ed86481a5f6e80b8529fb6";
 
     // Default Fallback Links
@@ -318,10 +319,10 @@
     let currentCategory = "All";
     let searchQuery = "";
     let isListView = false;
-    let useFirebase = false;
 
     // Helper: SHA-256 computation using Web Crypto API
     async function hashPasskey(str) {
+      if (!window.crypto || !crypto.subtle) return "";
       const encoder = new TextEncoder();
       const data = encoder.encode(str);
       const hashBuffer = await crypto.subtle.digest('SHA-256', data);
@@ -507,7 +508,7 @@
               </div>
             </div>
             <div class="flex items-center space-x-2">
-              <button onclick="openLink('${link.url}', ${link.preview}, '${escapeHtml(link.title)}')" class="px-3.5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition">
+              <button onclick="openLink('${link.url}', '${escapeHtml(link.title)}')" class="px-3.5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition">
                 Open
               </button>
             </div>
@@ -530,7 +531,7 @@
 
             <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
               <span class="text-[11px] text-slate-500 uppercase tracking-wider font-medium">${link.category || 'General'}</span>
-              <button onclick="openLink('${link.url}', ${link.preview}, '${escapeHtml(link.title)}')" class="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg bg-indigo-600/90 hover:bg-indigo-500 text-white text-xs font-medium transition shadow-md shadow-indigo-600/20">
+              <button onclick="openLink('${link.url}', '${escapeHtml(link.title)}')" class="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg bg-indigo-600/90 hover:bg-indigo-500 text-white text-xs font-medium transition shadow-md shadow-indigo-600/20">
                 <span>Launch</span>
                 <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
               </button>
@@ -569,16 +570,12 @@
       return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
     }
 
-    // Link Action
-    window.openLink = function(url, preview, title) {
-      if (preview) {
-        document.getElementById("modal-title").innerText = title;
-        document.getElementById("modal-iframe").src = url;
-        document.getElementById("modal-external-link").href = url;
-        document.getElementById("iframe-modal").classList.remove("hidden");
-      } else {
-        window.open(url, '_blank');
-      }
+    // Link Launch Action: Opens in the embedded iframe modal preview overlay
+    window.openLink = function(url, title) {
+      document.getElementById("modal-title").innerText = title;
+      document.getElementById("modal-iframe").src = url;
+      document.getElementById("modal-external-link").href = url;
+      document.getElementById("iframe-modal").classList.remove("hidden");
     };
 
     window.editLink = function(id) {
@@ -642,7 +639,7 @@
         const inputVal = document.getElementById("passkey-input").value.trim();
         const hashedInput = await hashPasskey(inputVal);
 
-        if (hashedInput === ADMIN_PASSKEY_HASH) {
+        if (inputVal === PLAIN_PASSKEY || hashedInput === ADMIN_PASSKEY_HASH) {
           document.getElementById("passkey-error").classList.add("hidden");
           document.getElementById("passkey-modal").classList.add("hidden");
           document.getElementById("passkey-input").value = "";
