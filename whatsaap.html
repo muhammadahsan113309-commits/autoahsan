@@ -1,1 +1,126 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp Direct Sender</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0b0f19;
+      color: #f3f4f6;
+    }
+    .glass {
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glow-bg {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body class="min-h-screen relative flex items-center justify-center p-4 overflow-hidden">
+
+  <!-- Glow effects -->
+  <div class="glow-bg w-80 h-80 bg-emerald-600/20 top-[-50px] left-[-50px]"></div>
+  <div class="glow-bg w-80 h-80 bg-green-500/15 bottom-[-50px] right-[-50px]"></div>
+
+  <!-- Form Card -->
+  <div class="relative z-10 w-full max-w-md glass p-6 sm:p-8 rounded-2xl shadow-2xl space-y-6">
+    
+    <!-- Header -->
+    <div class="flex items-center space-x-3">
+      <div class="p-3 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+        <i data-lucide="message-square" class="w-6 h-6"></i>
+      </div>
+      <div>
+        <h2 class="text-xl font-bold text-white">WhatsApp Direct</h2>
+        <p class="text-xs text-slate-400">Send messages without saving contact</p>
+      </div>
+    </div>
+
+    <!-- Message Form -->
+    <form id="whatsapp-form" class="space-y-4">
+      <!-- Phone Number Input -->
+      <div>
+        <label class="block text-xs font-medium text-slate-300 mb-1">WhatsApp Phone Number</label>
+        <div class="relative">
+          <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">+</span>
+          <input 
+            type="tel" 
+            id="phone-number" 
+            required 
+            placeholder="923001234567 (with country code)" 
+            class="w-full pl-8 pr-4 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition"
+          >
+        </div>
+        <p class="text-[11px] text-slate-500 mt-1">Include country code without spaces or '+' (e.g. 92300... or 1415...)</p>
+      </div>
+
+      <!-- Message Input -->
+      <div>
+        <label class="block text-xs font-medium text-slate-300 mb-1">Message</label>
+        <textarea 
+          id="message" 
+          rows="4" 
+          placeholder="Type your message here..." 
+          class="w-full px-4 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition resize-none"
+        ></textarea>
+      </div>
+
+      <!-- Send Button -->
+      <button 
+        type="submit" 
+        class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-green-500 hover:from-emerald-500 hover:to-green-400 text-white font-semibold text-sm shadow-lg shadow-emerald-600/25 transition flex items-center justify-center space-x-2"
+      >
+        <i data-lucide="send" class="w-4 h-4"></i>
+        <span>Send via WhatsApp</span>
+      </button>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+
+      const form = document.getElementById("whatsapp-form");
+      
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        let phone = document.getElementById("phone-number").value.trim();
+        const message = document.getElementById("message").value.trim();
+
+        // Strip non-numeric characters (spaces, hyphens, plus signs, brackets)
+        phone = phone.replace(/[^0-9]/g, '');
+
+        if (!phone) {
+          alert("Please enter a valid phone number.");
+          return;
+        }
+
+        // Encode the message for URL
+        const encodedMessage = encodeURIComponent(message);
+
+        // WhatsApp Deep Link URL
+        const waUrl = `https://wa.me/${phone}?text=${encodedMessage}`;
+
+        // Open WhatsApp in a new tab / application
+        window.open(waUrl, '_blank');
+      });
+    });
+  </script>
+</body>
+</html>
