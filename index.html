@@ -1,1002 +1,684 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Link Directory & Admin Hub</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            400: '#38bdf8',
-                            500: '#06b6d4',
-                            600: '#0891b2',
-                            700: '#0e7490',
-                        },
-                        accent: {
-                            500: '#8b5cf6',
-                            600: '#7c3aed',
-                        }
-                    },
-                    animation: {
-                        'pulse-glow': 'pulseGlow 3s infinite ease-in-out',
-                        'float': 'float 6s infinite ease-in-out',
-                    },
-                    keyframes: {
-                        pulseGlow: {
-                            '0%, 100%': { opacity: '0.4', filter: 'blur(40px)' },
-                            '50%': { opacity: '0.8', filter: 'blur(50px)' },
-                        },
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0px)' },
-                            '50%': { transform: 'translateY(-6px)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-        
-        .glass-nav {
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        
-        .glass-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        
-        .glass-card:hover {
-            transform: translateY(-4px) scale(1.01);
-            border-color: rgba(6, 182, 212, 0.4);
-            box-shadow: 0 20px 40px -15px rgba(6, 182, 212, 0.25), 0 0 15px rgba(139, 92, 246, 0.15);
-        }
-
-        .glass-modal {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-        }
-
-        .glow-effect {
-            background: radial-gradient(circle at 50% -20%, rgba(6, 182, 212, 0.25), transparent 70%);
-        }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.8); }
-        ::-webkit-scrollbar-thumb { background: rgba(51, 65, 85, 0.8); border-radius: 9999px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(6, 182, 212, 0.6); }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Link Hub & Admin Portal</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0b0f19;
+      color: #f3f4f6;
+    }
+    .glass {
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.4);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-card:hover {
+      background: rgba(30, 41, 59, 0.7);
+      border-color: rgba(99, 102, 241, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.15);
+    }
+    .glow-bg {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 3px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between bg-slate-950 text-slate-100 antialiased selection:bg-brand-500 selection:text-white relative overflow-x-hidden">
+<body class="min-h-screen relative overflow-x-hidden flex flex-col custom-scrollbar">
 
-    <div class="fixed top-0 left-1/4 w-96 h-96 bg-brand-500/20 rounded-full animate-pulse-glow pointer-events-none -z-10"></div>
-    <div class="fixed bottom-1/3 right-1/4 w-96 h-96 bg-accent-500/20 rounded-full animate-pulse-glow pointer-events-none -z-10" style="animation-delay: 1.5s;"></div>
+  <!-- Ambient background glow effects -->
+  <div class="glow-bg w-96 h-96 bg-indigo-600/20 top-[-100px] left-[-100px]"></div>
+  <div class="glow-bg w-96 h-96 bg-cyan-500/15 top-[20%] right-[-100px]"></div>
+  <div class="glow-bg w-[500px] h-[500px] bg-purple-600/15 bottom-[-100px] left-[30%]"></div>
 
-    <header class="sticky top-0 z-40 glass-nav">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3 cursor-pointer group" onclick="filterCategory('All')">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 via-indigo-500 to-accent-500 p-0.5 shadow-lg shadow-brand-500/20 group-hover:shadow-brand-500/40 transition">
-                    <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-                        <i class="fa-solid fa-compass text-brand-400 group-hover:scale-110 transition"></i>
-                    </div>
-                </div>
-                <div>
-                    <h1 class="text-lg font-bold bg-gradient-to-r from-white via-slate-200 to-brand-400 bg-clip-text text-transparent">LinkHub</h1>
-                    <p class="text-[11px] text-slate-400 font-medium tracking-wide hidden sm:block">Central Launchpad & Web Index</p>
-                </div>
-            </div>
-
-            <div class="flex items-center space-x-3">
-                <button id="adminToggleBtn" onclick="openAdminModal()" class="flex items-center space-x-2 px-4 py-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-700/80 transition-all text-xs font-semibold shadow-inner hover:border-brand-500/50">
-                    <i class="fa-solid fa-shield-halved text-brand-400"></i>
-                    <span>Admin Portal</span>
-                </button>
-            </div>
+  <!-- HEADER -->
+  <header class="sticky top-0 z-30 glass border-b border-slate-800/80 px-4 lg:px-8 py-4">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="p-2.5 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 text-white shadow-lg shadow-indigo-500/30">
+          <i data-lucide="layout-grid" class="w-6 h-6"></i>
         </div>
-    </header>
+        <div>
+          <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-indigo-300">
+            Link Hub
+          </h1>
+          <div class="flex items-center space-x-2 text-xs text-slate-400">
+            <span id="sync-indicator" class="inline-block w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+            <span id="sync-status">Connecting to Database...</span>
+          </div>
+        </div>
+      </div>
 
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 glow-effect">
+      <div class="flex items-center space-x-3">
+        <button id="view-toggle" class="p-2.5 rounded-xl glass hover:bg-slate-800 text-slate-300 hover:text-white transition">
+          <i data-lucide="list" class="w-5 h-5"></i>
+        </button>
+        <button id="admin-btn" class="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-sm font-semibold transition shadow-lg shadow-indigo-600/20">
+          <i data-lucide="shield" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">Admin Access</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="relative z-10 flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-8 space-y-8">
+
+    <!-- SEARCH & FILTER BAR -->
+    <div class="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center glass p-4 rounded-2xl">
+      <!-- Search Input -->
+      <div class="relative flex-1">
+        <i data-lucide="search" class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+        <input type="text" id="search-input" placeholder="Search pages or external links..." 
+               class="w-full pl-11 pr-4 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700/60 text-sm text-slate-200 placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition">
+      </div>
+
+      <!-- Categories Filter -->
+      <div class="flex items-center space-x-2 overflow-x-auto pb-1 md:pb-0 custom-scrollbar" id="category-filters">
+        <!-- JS injects filter buttons here -->
+      </div>
+    </div>
+
+    <!-- LINKS CONTAINER -->
+    <div id="links-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+      <!-- JS injected links appear here -->
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div id="empty-state" class="hidden flex-col items-center justify-center py-16 text-center glass rounded-2xl">
+      <i data-lucide="folder-open" class="w-12 h-12 text-slate-500 mb-3"></i>
+      <h3 class="text-lg font-semibold text-slate-300">No links found</h3>
+      <p class="text-sm text-slate-500 mt-1">Try resetting search filters or adding new links in the Admin Panel.</p>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="relative z-10 glass border-t border-slate-800/80 py-6 px-4 text-center text-xs text-slate-500">
+    <p>Powered by Realtime Firebase &bull; Link Hub Portal</p>
+  </footer>
+
+  <!-- IFRAME PREVIEW MODAL -->
+  <div id="iframe-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden shadow-2xl">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800 glass">
+        <div class="flex items-center space-x-3">
+          <i data-lucide="external-link" class="w-5 h-5 text-indigo-400"></i>
+          <h3 id="modal-title" class="font-semibold text-slate-200 truncate max-w-xs sm:max-w-md">Preview</h3>
+        </div>
+        <div class="flex items-center space-x-2">
+          <a id="modal-external-link" href="#" target="_blank" class="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition" title="Open in new tab">
+            <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+          </a>
+          <button id="close-modal-btn" class="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+      <div class="flex-1 bg-slate-950 relative">
+        <iframe id="modal-iframe" class="w-full h-full border-0" src="about:blank"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASSKEY PROMPT MODAL -->
+  <div id="passkey-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-5 shadow-2xl">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="p-2 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/30">
+            <i data-lucide="lock" class="w-5 h-5"></i>
+          </div>
+          <h3 class="font-semibold text-lg text-slate-100">Admin Authentication</h3>
+        </div>
+        <button id="close-passkey-btn" class="text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <p class="text-sm text-slate-400">Enter your secure passkey to open management panel.</p>
+
+      <form id="passkey-form" class="space-y-4">
+        <div>
+          <input type="password" id="passkey-input" placeholder="Enter passkey..." 
+                 class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700/80 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500">
+          <p id="passkey-error" class="text-xs text-rose-500 mt-1.5 hidden">Invalid admin passkey.</p>
+        </div>
+        <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-semibold shadow-lg shadow-indigo-600/30 transition">
+          Unlock Admin Panel
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADMIN PANEL MODAL -->
+  <div id="admin-modal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      
+      <!-- Admin Header -->
+      <div class="flex items-center justify-between p-6 border-b border-slate-800 glass">
+        <div class="flex items-center space-x-3">
+          <div class="p-2 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/30">
+            <i data-lucide="sliders" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h2 class="text-lg font-bold text-white">Admin Management Panel</h2>
+            <p class="text-xs text-slate-400">Add, edit, and organize page links</p>
+          </div>
+        </div>
+        <button id="close-admin-btn" class="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Admin Body -->
+      <div class="p-6 overflow-y-auto space-y-6 custom-scrollbar flex-1">
         
-        <!-- Hero Section & Search -->
-        <section class="text-center space-y-5 py-4 sm:py-6">
-            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/30 text-brand-400 text-xs font-medium animate-float">
-                <span class="w-2 h-2 rounded-full bg-brand-400 animate-ping"></span>
-                <span>Fast Navigation Dashboard</span>
-            </div>
+        <!-- Add/Edit Form -->
+        <form id="link-form" class="glass p-5 rounded-xl border border-slate-800 space-y-4">
+          <h3 id="form-heading" class="text-sm font-semibold text-indigo-400 uppercase tracking-wider">Add New Link</h3>
+          <input type="hidden" id="link-id">
 
-            <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
-                Access Your <span class="bg-gradient-to-r from-brand-400 to-accent-500 bg-clip-text text-transparent">Modules & Apps</span>
-            </h2>
-            
-            <!-- Search Control Bar -->
-            <div class="max-w-2xl mx-auto pt-2">
-                <div class="relative group">
-                    <div class="absolute -inset-0.5 bg-gradient-to-r from-brand-500 to-accent-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-300"></div>
-                    <div class="relative flex items-center">
-                        <i class="fa-solid fa-magnifying-glass absolute left-4 text-slate-400 group-focus-within:text-brand-400 transition"></i>
-                        <input type="text" id="searchInput" oninput="renderLinks()" placeholder="Search links by name, path, tag or category..." 
-                            class="w-full pl-11 pr-10 py-3.5 bg-slate-900/90 border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-brand-500/50 text-sm text-white placeholder-slate-500 outline-none transition backdrop-blur-md">
-                        <button onclick="clearSearch()" id="clearSearchBtn" class="hidden absolute right-3 text-slate-400 hover:text-white p-1 transition">
-                            <i class="fa-solid fa-circle-xmark"></i>
-                        </button>
-                    </div>
-                </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Title</label>
+              <input type="text" id="link-title" required placeholder="e.g. Dashboard Page" class="w-full px-3.5 py-2 rounded-lg bg-slate-950 border border-slate-700/80 text-sm text-white focus:outline-none focus:border-indigo-500">
             </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">URL / File Path</label>
+              <input type="text" id="link-url" required placeholder="e.g. index1.html or https://..." class="w-full px-3.5 py-2 rounded-lg bg-slate-950 border border-slate-700/80 text-sm text-white focus:outline-none focus:border-indigo-500">
+            </div>
+          </div>
 
-            <!-- Category Chips -->
-            <div id="categoryContainer" class="flex flex-wrap items-center justify-center gap-2 pt-3">
-                <!-- Categories rendered dynamically -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Category</label>
+              <input type="text" id="link-category" placeholder="e.g. Modules" class="w-full px-3.5 py-2 rounded-lg bg-slate-950 border border-slate-700/80 text-sm text-white focus:outline-none focus:border-indigo-500">
             </div>
-        </section>
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Badge (Optional)</label>
+              <input type="text" id="link-badge" placeholder="e.g. NEW, HOT, BETA" class="w-full px-3.5 py-2 rounded-lg bg-slate-950 border border-slate-700/80 text-sm text-white focus:outline-none focus:border-indigo-500">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Lucide Icon Name</label>
+              <input type="text" id="link-icon" placeholder="file-text, globe, code..." class="w-full px-3.5 py-2 rounded-lg bg-slate-950 border border-slate-700/80 text-sm text-white focus:outline-none focus:border-indigo-500">
+            </div>
+          </div>
 
-        <!-- Directory Section -->
-        <section class="space-y-4">
-            <div class="flex items-center justify-between px-1">
-                <div id="resultCount" class="text-xs text-slate-400 font-medium flex items-center space-x-2">
-                    <i class="fa-solid fa-cubes text-slate-500"></i>
-                    <span>Loading directory...</span>
-                </div>
-                
-                <div class="flex items-center space-x-1 bg-slate-900/80 p-1 rounded-xl border border-slate-800">
-                    <button onclick="setViewMode('grid')" id="viewGridBtn" class="p-2 rounded-lg text-xs text-brand-400 bg-slate-800 shadow transition" title="Grid View">
-                        <i class="fa-solid fa-grip"></i>
-                    </button>
-                    <button onclick="setViewMode('list')" id="viewListBtn" class="p-2 rounded-lg text-xs text-slate-400 hover:text-slate-200 transition" title="List View">
-                        <i class="fa-solid fa-list-ul"></i>
-                    </button>
-                </div>
-            </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Description</label>
+            <input type="text" id="link-desc" placeholder="Short summary..." class="w-full px-3.5 py-2 rounded-lg bg-slate-950 border border-slate-700/80 text-sm text-white focus:outline-none focus:border-indigo-500">
+          </div>
 
-            <!-- Grid Container -->
-            <div id="linksGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                <!-- Dynamically populated cards -->
-            </div>
-
-            <!-- Empty Directory State -->
-            <div id="emptyState" class="hidden text-center py-20 glass-card rounded-2xl border border-dashed border-slate-800 space-y-4">
-                <div class="w-16 h-16 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mx-auto text-slate-500 text-2xl">
-                    <i class="fa-solid fa-link-slash"></i>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold text-slate-200">No links matched your query</h3>
-                    <p class="text-slate-400 text-xs mt-1 max-w-xs mx-auto">Try typing a different keyword or create a new entry inside the Admin Panel.</p>
-                </div>
-                <button onclick="openAdminModal()" class="inline-flex items-center space-x-2 px-4 py-2.5 bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-500 hover:to-accent-500 text-white text-xs font-semibold rounded-xl transition shadow-lg shadow-brand-500/20">
-                    <i class="fa-solid fa-plus"></i>
-                    <span>Add New Directory Item</span>
-                </button>
-            </div>
-        </section>
-    </main>
-
-    <footer class="border-t border-slate-800/80 bg-slate-950/80 py-6 text-center text-xs text-slate-500 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div class="flex items-center space-x-2">
-                <span class="font-semibold text-slate-400">Link Hub Directory</span>
-                <span>&bull;</span>
-                <span class="text-slate-500">reakweb Project Sync</span>
-            </div>
+          <div class="flex items-center justify-between pt-2">
             <div class="flex items-center space-x-4">
-                <span id="firestoreStatus" class="inline-flex items-center space-x-2 text-xs bg-slate-900/90 border border-slate-800 px-3 py-1 rounded-full">
-                    <span id="statusIndicator" class="w-2 h-2 rounded-full bg-amber-500"></span>
-                    <span id="statusText" class="text-slate-400 font-medium">Connecting to Firebase...</span>
-                </span>
+              <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+                <input type="checkbox" id="link-preview" checked class="rounded bg-slate-950 border-slate-700 text-indigo-600 focus:ring-0">
+                <span>Enable In-App Modal Preview</span>
+              </label>
             </div>
+            <div class="flex space-x-2">
+              <button type="button" id="reset-form-btn" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition">Cancel</button>
+              <button type="submit" class="px-5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-lg shadow-indigo-600/30 transition">Save Link</button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Existing Links List -->
+        <div class="space-y-3">
+          <h3 class="text-sm font-semibold text-slate-300">Existing Links (<span id="admin-count">0</span>)</h3>
+          <div id="admin-links-list" class="space-y-2">
+            <!-- JS renders admin items here -->
+          </div>
         </div>
-    </footer>
 
-    <div id="iframeModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-2 sm:p-6 transition-all">
-        <div class="glass-modal rounded-2xl w-full h-full max-w-6xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden border border-slate-700/80">
-            <!-- Header -->
-            <div class="px-5 py-3.5 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between">
-                <div class="flex items-center space-x-3 truncate">
-                    <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-brand-400 shrink-0">
-                        <i id="iframeIcon" class="fa-solid fa-globe"></i>
-                    </div>
-                    <div class="truncate">
-                        <h4 id="iframeTitle" class="font-bold text-slate-100 text-sm truncate">Page Preview</h4>
-                        <div id="iframeUrl" class="text-[11px] text-brand-400 font-mono truncate"></div>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <a id="iframeExternalBtn" href="#" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-medium transition flex items-center space-x-1.5" title="Open page in a new window">
-                        <span>New Tab</span>
-                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-                    </a>
-                    <button onclick="closeIframeModal()" class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg text-sm transition">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </div>
-            </div>
-            <!-- Body -->
-            <div class="flex-grow bg-slate-950 relative">
-                <div id="iframeLoader" class="absolute inset-0 flex items-center justify-center bg-slate-950/90 text-slate-400 text-xs space-x-3 z-0">
-                    <i class="fa-solid fa-circle-notch fa-spin text-brand-400 text-2xl"></i>
-                    <span>Loading embedded view...</span>
-                </div>
-                <iframe id="previewIframe" class="w-full h-full border-none relative z-10" onload="document.getElementById('iframeLoader').classList.add('hidden')"></iframe>
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
 
-    <div id="adminModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
-        <div class="glass-modal rounded-2xl w-full max-w-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-slate-700/80">
-            
-            <!-- Header -->
-            <div class="px-6 py-4 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <div class="w-9 h-9 rounded-xl bg-brand-500/10 border border-brand-500/30 flex items-center justify-center text-brand-400">
-                        <i class="fa-solid fa-user-shield text-base"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-slate-100 text-sm sm:text-base">Admin Control Center</h3>
-                        <p class="text-[11px] text-slate-400">Manage link indexing & system permissions</p>
-                    </div>
-                </div>
-                <button onclick="closeAdminModal()" class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg text-sm transition">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
+  <!-- FIREBASE MODULE & APPLICATION SCRIPT -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, onValue, set, push, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getFirestore, collection, onSnapshot, doc, setDoc, addDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-            <!-- Passkey Screen (Cryptographically verified) -->
-            <div id="adminAuthScreen" class="p-8 space-y-5 text-center max-w-sm mx-auto my-auto w-full">
-                <div class="w-14 h-14 bg-gradient-to-tr from-brand-500/20 to-accent-500/20 rounded-2xl border border-brand-500/30 flex items-center justify-center mx-auto text-brand-400 text-2xl shadow-lg">
-                    <i class="fa-solid fa-key"></i>
-                </div>
-                <div>
-                    <h4 class="font-bold text-slate-100">Passkey Required</h4>
-                    <p class="text-xs text-slate-400 mt-1">Enter your admin passkey to unlock control tools.</p>
-                </div>
-                <div class="space-y-2">
-                    <input type="password" id="passkeyInput" placeholder="Enter passkey..." 
-                        onkeyup="if(event.key==='Enter') verifyPasskey()"
-                        class="w-full px-4 py-3 bg-slate-950 border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-brand-500/50 text-sm text-white text-center tracking-widest outline-none transition">
-                    <div id="authErrorMsg" class="text-xs text-rose-400 font-medium hidden">
-                        <i class="fa-solid fa-circle-exclamation mr-1"></i>Invalid passkey.
-                    </div>
-                </div>
-                <button onclick="verifyPasskey()" class="w-full py-3 bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-500 hover:to-accent-500 text-white text-xs font-bold rounded-xl transition shadow-md shadow-brand-500/20">
-                    Unlock Panel
-                </button>
-            </div>
+    // Reakweb Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyACVwVXRB_5nTFozs0PV22zd6wSpZuBVqE",
+      authDomain: "reakweb.firebaseapp.com",
+      databaseURL: "https://reakweb-default-rtdb.firebaseio.com",
+      projectId: "reakweb",
+      storageBucket: "reakweb.firebasestorage.app",
+      messagingSenderId: "228639861953",
+      appId: "1:228639861953:web:2941663bb550703b61b840"
+    };
 
-            <!-- Admin Unlocked Dashboard -->
-            <div id="adminContentScreen" class="hidden flex-grow flex flex-col overflow-hidden">
-                <!-- Navigation Tabs -->
-                <div class="flex border-b border-slate-800 bg-slate-950/60 px-6">
-                    <button id="tabAddBtn" onclick="switchAdminTab('add')" class="py-3 px-4 text-xs font-bold border-b-2 border-brand-400 text-brand-400 transition">
-                        <i class="fa-solid fa-plus-circle mr-2"></i>Add / Edit Link
-                    </button>
-                    <button id="tabManageBtn" onclick="switchAdminTab('manage')" class="py-3 px-4 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition">
-                        <i class="fa-solid fa-list-check mr-2"></i>Manage Links
-                    </button>
-                    <button id="tabSettingsBtn" onclick="switchAdminTab('settings')" class="py-3 px-4 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition">
-                        <i class="fa-solid fa-sliders mr-2"></i>Settings
-                    </button>
-                </div>
+    // Correct SHA-256 hash for password: ahsan0315
+    const ADMIN_PASSKEY_HASH = "c9cd9665bc8ea0a3c2bfba617c09c25f1b62f83196ed86481a5f6e80b8529fb6";
 
-                <div class="p-6 overflow-y-auto flex-grow space-y-6">
-                    
-                    <!-- TAB 1: Add or Edit Form -->
-                    <div id="adminTabForm" class="space-y-4">
-                        <div class="flex items-center justify-between">
-                            <h4 id="formHeaderTitle" class="text-xs font-bold text-slate-300 uppercase tracking-wider">Add New Link Entry</h4>
-                            <button id="cancelEditBtn" onclick="resetAdminForm()" class="hidden text-xs text-rose-400 hover:underline">
-                                <i class="fa-solid fa-xmark mr-1"></i>Cancel Editing
-                            </button>
-                        </div>
+    // Default Fallback Links
+    const INITIAL_LINKS = [
+      {
+        id: "default-1",
+        title: "Index 1 Page",
+        url: "index1.html",
+        category: "Local Pages",
+        desc: "Primary custom module file",
+        icon: "file-text",
+        badge: "NEW",
+        preview: true
+      },
+      {
+        id: "default-2",
+        title: "Index 2 Page",
+        url: "index2.html",
+        category: "Local Pages",
+        desc: "Secondary custom module file",
+        icon: "file-code",
+        badge: "BETA",
+        preview: true
+      }
+    ];
 
-                        <form id="linkForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
-                            <input type="hidden" id="linkIdInput">
+    // State Variables
+    let app, db, rtdb;
+    let linksData = [];
+    let currentCategory = "All";
+    let searchQuery = "";
+    let isListView = false;
+    let useFirebase = false;
 
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-xs font-medium text-slate-400 mb-1">Title *</label>
-                                    <input type="text" id="linkTitle" required placeholder="e.g. Dashboard Module" 
-                                        class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:border-brand-500 outline-none transition">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-medium text-slate-400 mb-1">URL / Path *</label>
-                                    <input type="text" id="linkUrl" required placeholder="e.g. index1.html or https://example.com" 
-                                        class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:border-brand-500 outline-none transition">
-                                </div>
-                            </div>
+    // Helper: SHA-256 computation using Web Crypto API
+    async function hashPasskey(str) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(str);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
 
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                <div>
-                                    <label class="block text-xs font-medium text-slate-400 mb-1">Category</label>
-                                    <select id="linkCategory" class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:border-brand-500 outline-none transition">
-                                        <option value="Pages">Pages</option>
-                                        <option value="Apps">Apps</option>
-                                        <option value="Games">Games</option>
-                                        <option value="Tools">Tools</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-medium text-slate-400 mb-1">Badge Tag</label>
-                                    <input type="text" id="linkBadge" placeholder="e.g. Hot, New, Beta" 
-                                        class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:border-brand-500 outline-none transition">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-medium text-slate-400 mb-1">FontAwesome Icon</label>
-                                    <input type="text" id="linkIcon" placeholder="fa-solid fa-code" 
-                                        class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:border-brand-500 outline-none transition">
-                                </div>
-                            </div>
-
-                            <div>
-                                <label class="block text-xs font-medium text-slate-400 mb-1">Description</label>
-                                <textarea id="linkDesc" rows="2" placeholder="Brief summary of what this link contains..." 
-                                    class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:border-brand-500 outline-none transition"></textarea>
-                            </div>
-
-                            <div class="flex items-center space-x-6 pt-1">
-                                <label class="flex items-center space-x-2 cursor-pointer">
-                                    <input type="checkbox" id="linkActive" checked class="w-4 h-4 rounded text-brand-500 bg-slate-950 border-slate-800 focus:ring-brand-500">
-                                    <span class="text-xs text-slate-300 font-medium">Active / Visible</span>
-                                </label>
-
-                                <label class="flex items-center space-x-2 cursor-pointer">
-                                    <input type="checkbox" id="linkFeatured" class="w-4 h-4 rounded text-accent-500 bg-slate-950 border-slate-800 focus:ring-accent-500">
-                                    <span class="text-xs text-slate-300 font-medium">Highlight / Featured</span>
-                                </label>
-                            </div>
-
-                            <div class="pt-3 flex justify-end">
-                                <button type="submit" class="px-5 py-2.5 bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-500 hover:to-accent-500 text-white text-xs font-bold rounded-xl shadow-lg transition flex items-center space-x-2">
-                                    <i class="fa-solid fa-floppy-disk"></i>
-                                    <span>Save Link</span>
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- TAB 2: Manage Existing Links List -->
-                    <div id="adminTabManage" class="hidden space-y-3">
-                        <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Existing Directory Items</div>
-                        <div id="adminLinksList" class="space-y-2">
-                            <!-- Populated dynamically -->
-                        </div>
-                    </div>
-
-                    <!-- TAB 3: Settings & Security -->
-                    <div id="adminTabSettings" class="hidden space-y-5">
-                        <div>
-                            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Security & Passkey Settings</h4>
-                            <p class="text-xs text-slate-400">Update your secret passkey. The new key will be stored as an encrypted SHA-256 hash.</p>
-                        </div>
-
-                        <form onsubmit="handlePasskeyChange(event)" class="space-y-4 max-w-md">
-                            <div>
-                                <label class="block text-xs font-medium text-slate-400 mb-1">New Passkey</label>
-                                <input type="password" id="newPasskeyInput" required placeholder="Enter new secret passkey..." 
-                                    class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:border-brand-500 outline-none transition">
-                            </div>
-                            <button type="submit" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-brand-400 border border-brand-500/30 rounded-xl text-xs font-semibold transition">
-                                Update Admin Passkey
-                            </button>
-                        </form>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Notification Toast -->
-    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center space-x-3 bg-slate-900/90 text-slate-100 border border-slate-700/80 px-4 py-3 rounded-2xl shadow-2xl backdrop-blur-md text-xs font-medium">
-        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
-        <span id="toastMsg">Action completed</span>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getDatabase, ref, onValue, set, push, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-        import { getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-        // EMBEDDED REALTIME FIREBASE CONFIGURATION (reakweb)
-        const firebaseConfig = {
-            apiKey: "AIzaSyACVwVXRB_5nTFozs0PV22zd6wSpZuBVqE",
-            authDomain: "reakweb.firebaseapp.com",
-            databaseURL: "https://reakweb-default-rtdb.firebaseio.com",
-            projectId: "reakweb",
-            storageBucket: "reakweb.firebasestorage.app",
-            messagingSenderId: "228639861953",
-            appId: "1:228639861953:web:2941663bb550703b61b840"
-        };
-
-        // PASSKEY CRYPTOGRAPHIC SECURITY
-        // SHA-256 Hash of 'ahsan0315'
-        const INITIAL_PASSKEY_HASH = "e9f8ed281e01f6ce46fa7aefbcfbe619fa1d5cc5a4eb31d68a2bc540fbe3d223";
-        let activePasskeyHash = localStorage.getItem('hub_admin_passkey_hash') || INITIAL_PASSKEY_HASH;
-
-        // APP STATE
-        let app = null;
-        let rtdb = null;
-        let fsDb = null;
-        let linksData = [];
-        let activeCategory = "All";
-        let currentViewMode = "grid";
-        let activeStorageMode = 'rtdb'; // 'rtdb', 'firestore', or 'local'
-
-        const DEFAULT_SEED_LINKS = [
-            {
-                title: "Module Index 1",
-                url: "index1.html",
-                category: "Pages",
-                description: "Primary landing page and feature entry point for index1.html",
-                icon: "fa-solid fa-code-merge",
-                badge: "Hot",
-                featured: true,
-                active: true,
-                createdAt: Date.now()
-            },
-            {
-                title: "Module Index 2",
-                url: "index2.html",
-                category: "Pages",
-                description: "Secondary feature page index2.html",
-                icon: "fa-solid fa-layer-group",
-                badge: "New",
-                featured: false,
-                active: true,
-                createdAt: Date.now() - 1000
-            },
-            {
-                title: "Tailwind CSS Docs",
-                url: "https://tailwindcss.com/docs",
-                category: "Tools",
-                description: "Official documentation and reference cheatsheet",
-                icon: "fa-solid fa-book-bookmark",
-                badge: "Beta",
-                featured: false,
-                active: true,
-                createdAt: Date.now() - 2000
-            }
-        ];
-
-        async function sha256(message) {
-            const msgBuffer = new TextEncoder().encode(message);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-
-        async function initFirebase() {
-            const statusIndicator = document.getElementById('statusIndicator');
-            const statusText = document.getElementById('statusText');
-
-            try {
-                app = initializeApp(firebaseConfig);
-                rtdb = getDatabase(app);
-                
-                // Try Realtime Database first since databaseURL is present
-                const linksRef = ref(rtdb, 'links');
-                onValue(linksRef, (snapshot) => {
-                    const data = snapshot.val();
-                    if (data) {
-                        linksData = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                    } else {
-                        // Seed RTDB if empty
-                        DEFAULT_SEED_LINKS.forEach(item => {
-                            const newRef = push(ref(rtdb, 'links'));
-                            set(newRef, item);
-                        });
-                    }
-                    activeStorageMode = 'rtdb';
-                    statusIndicator.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
-                    statusText.textContent = "reakweb Realtime DB Connected";
-                    renderLinks();
-                }, (error) => {
-                    console.warn("RTDB fallback to Firestore:", error);
-                    initFirestoreFallback(statusIndicator, statusText);
-                });
-
-            } catch(e) {
-                console.warn("Firebase App error fallback:", e);
-                initFirestoreFallback(statusIndicator, statusText);
-            }
-        }
-
-        function initFirestoreFallback(statusIndicator, statusText) {
-            try {
-                fsDb = getFirestore(app);
-                const colRef = collection(fsDb, 'links');
-                onSnapshot(colRef, (snapshot) => {
-                    let fetched = [];
-                    snapshot.forEach(docSnap => fetched.push({ id: docSnap.id, ...docSnap.data() }));
-                    
-                    if (fetched.length === 0 && snapshot.empty) {
-                        DEFAULT_SEED_LINKS.forEach(async item => await addDoc(colRef, item));
-                    } else {
-                        linksData = fetched;
-                    }
-                    activeStorageMode = 'firestore';
-                    statusIndicator.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
-                    statusText.textContent = "reakweb Firestore Active";
-                    renderLinks();
-                }, (err) => {
-                    console.warn("Firestore error fallback to localStorage:", err);
-                    loadLocalStorageFallback(statusIndicator, statusText);
-                });
-            } catch(e) {
-                loadLocalStorageFallback(statusIndicator, statusText);
-            }
-        }
-
-        function loadLocalStorageFallback(statusIndicator, statusText) {
-            activeStorageMode = 'local';
-            statusIndicator.className = "w-2 h-2 rounded-full bg-brand-400";
-            statusText.textContent = "Local Offline Memory";
-
-            const localSaved = localStorage.getItem('hub_links_data');
-            if (localSaved) {
-                try {
-                    linksData = JSON.parse(localSaved);
-                } catch(e) {
-                    linksData = [...DEFAULT_SEED_LINKS];
-                }
-            } else {
-                linksData = [...DEFAULT_SEED_LINKS];
-                localStorage.setItem('hub_links_data', JSON.stringify(linksData));
-            }
-            renderLinks();
-        }
-
-        function saveLocalState() {
-            if (activeStorageMode === 'local') {
-                localStorage.setItem('hub_links_data', JSON.stringify(linksData));
-            }
-        }
-
-        window.renderLinks = function() {
-            const grid = document.getElementById('linksGrid');
-            const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
-            const emptyState = document.getElementById('emptyState');
-            const clearBtn = document.getElementById('clearSearchBtn');
-
-            clearBtn.classList.toggle('hidden', !searchVal);
-
-            // Preset categories as requested: All, Apps, Games, Pages, Tools
-            const categoryPresets = ["All", "Apps", "Games", "Pages", "Tools"];
-            renderCategoryChips(categoryPresets);
-
-            // Filter Links
-            const filtered = linksData.filter(link => {
-                if (!link.active) return false;
-                
-                const matchesCategory = activeCategory === "All" || (link.category || "Pages") === activeCategory;
-                const matchesSearch = !searchVal || 
-                    link.title?.toLowerCase().includes(searchVal) ||
-                    link.url?.toLowerCase().includes(searchVal) ||
-                    link.description?.toLowerCase().includes(searchVal) ||
-                    link.category?.toLowerCase().includes(searchVal) ||
-                    link.badge?.toLowerCase().includes(searchVal);
-
-                return matchesCategory && matchesSearch;
+    // Initialize Firebase Live Connection
+    function initFirebase() {
+      try {
+        app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        rtdb = getDatabase(app);
+        
+        // Listen to Firestore real-time updates
+        const linksCol = collection(db, "links");
+        onSnapshot(linksCol, (snapshot) => {
+          if (!snapshot.empty) {
+            linksData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            updateUI();
+            updateSyncStatus(true, "Firebase Live");
+          } else {
+            // Seed initial links if Firestore is empty
+            INITIAL_LINKS.forEach(item => {
+              const { id, ...data } = item;
+              setDoc(doc(db, "links", id), data);
             });
+          }
+        }, (error) => {
+          console.warn("Firestore listener failed, trying Realtime DB:", error);
+          listenRealtimeDB();
+        });
 
-            document.getElementById('resultCount').innerHTML = `
-                <i class="fa-solid fa-cubes text-brand-400"></i>
-                <span>Showing <b>${filtered.length}</b> of <b>${linksData.filter(l => l.active).length}</b> items</span>
-            `;
+      } catch (err) {
+        console.warn("Firebase Init Error, switching to Local Storage:", err);
+        loadLocalStorage();
+      }
+    }
 
-            if (filtered.length === 0) {
-                grid.innerHTML = '';
-                emptyState.classList.remove('hidden');
-                return;
-            } else {
-                emptyState.classList.add('hidden');
-            }
-
-            // Render Views
-            if (currentViewMode === 'grid') {
-                grid.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5";
-                grid.innerHTML = filtered.map(link => `
-                    <div class="glass-card rounded-2xl p-5 flex flex-col justify-between space-y-4 group relative overflow-hidden ${link.featured ? 'border-brand-500/40 shadow-lg shadow-brand-500/10' : ''}">
-                        ${link.featured ? '<div class="absolute top-0 right-0 w-16 h-16 pointer-events-none"><div class="absolute transform rotate-45 bg-gradient-to-r from-brand-500 to-accent-500 text-white text-[9px] font-extrabold py-0.5 right-[-35px] top-[16px] w-[120px] text-center shadow-md">FEATURED</div></div>' : ''}
-                        
-                        <div class="space-y-3">
-                            <div class="flex items-start justify-between gap-2">
-                                <div class="flex items-center space-x-3 truncate">
-                                    <div class="w-11 h-11 rounded-xl bg-slate-900 border border-slate-700/80 flex items-center justify-center text-brand-400 group-hover:scale-110 group-hover:border-brand-500/50 transition shrink-0 shadow-inner">
-                                        <i class="${escapeHtml(link.icon || 'fa-solid fa-link')} text-xl"></i>
-                                    </div>
-                                    <div class="truncate">
-                                        <h3 class="font-bold text-slate-100 group-hover:text-brand-300 transition truncate text-sm sm:text-base">${escapeHtml(link.title)}</h3>
-                                        <div class="flex items-center space-x-2 mt-0.5">
-                                            <span class="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-md bg-slate-900 text-slate-400 border border-slate-800">${escapeHtml(link.category || 'Pages')}</span>
-                                            ${link.badge ? `<span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-brand-500/20 text-brand-300 border border-brand-500/30">${escapeHtml(link.badge)}</span>` : ''}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <p class="text-xs text-slate-400 line-clamp-2 min-h-[32px] leading-relaxed">${escapeHtml(link.description || 'No description provided.')}</p>
-                            
-                            <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 bg-slate-950/60 p-2 rounded-lg border border-slate-800/80">
-                                <span class="truncate text-brand-400/90 mr-2">${escapeHtml(link.url)}</span>
-                                <button onclick="copyToClipboard('${escapeHtml(link.url)}')" class="hover:text-white p-1 transition" title="Copy URL">
-                                    <i class="fa-regular fa-copy"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="pt-3 border-t border-slate-800/80 flex items-center justify-end gap-2">
-                            <div class="flex items-center space-x-1.5">
-                                <button onclick="previewLink('${escapeHtml(link.url)}', '${escapeHtml(link.title)}', '${escapeHtml(link.icon || 'fa-solid fa-globe')}')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl transition flex items-center space-x-1">
-                                    <i class="fa-solid fa-eye text-brand-400"></i>
-                                    <span>Preview</span>
-                                </button>
-                                <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-500 hover:to-accent-500 text-white text-xs font-semibold rounded-xl transition flex items-center space-x-1 shadow-sm">
-                                    <span>Open</span>
-                                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-            } else {
-                // Compact List View
-                grid.className = "flex flex-col space-y-2.5";
-                grid.innerHTML = filtered.map(link => `
-                    <div class="glass-card rounded-xl p-3.5 flex items-center justify-between gap-4 group">
-                        <div class="flex items-center space-x-3 truncate">
-                            <div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-brand-400 shrink-0">
-                                <i class="${escapeHtml(link.icon || 'fa-solid fa-link')}"></i>
-                            </div>
-                            <div class="truncate">
-                                <div class="flex items-center space-x-2">
-                                    <h3 class="font-bold text-slate-100 group-hover:text-brand-300 transition text-sm truncate">${escapeHtml(link.title)}</h3>
-                                    <span class="text-[10px] px-2 py-0.2 rounded bg-slate-900 text-slate-400 border border-slate-800">${escapeHtml(link.category || 'Pages')}</span>
-                                    ${link.badge ? `<span class="text-[10px] px-1.5 py-0.2 rounded bg-brand-500/20 text-brand-300 border border-brand-500/30">${escapeHtml(link.badge)}</span>` : ''}
-                                </div>
-                                <div class="text-xs font-mono text-slate-400 truncate mt-0.5">${escapeHtml(link.url)}</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-2 shrink-0">
-                            <button onclick="copyToClipboard('${escapeHtml(link.url)}')" class="p-2 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white rounded-lg text-xs transition" title="Copy URL">
-                                <i class="fa-regular fa-copy"></i>
-                            </button>
-                            <button onclick="previewLink('${escapeHtml(link.url)}', '${escapeHtml(link.title)}', '${escapeHtml(link.icon || 'fa-solid fa-globe')}')" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold transition" title="Preview iframe">
-                                <i class="fa-solid fa-eye text-brand-400"></i>
-                            </button>
-                            <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 bg-brand-600/20 hover:bg-brand-600 text-brand-300 hover:text-white border border-brand-500/30 rounded-lg text-xs font-semibold transition" title="Open in new tab">
-                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                            </a>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            renderAdminLinksList();
+    function listenRealtimeDB() {
+      const linksRef = ref(rtdb, 'links');
+      onValue(linksRef, (snapshot) => {
+        const val = snapshot.val();
+        if (val) {
+          linksData = Object.keys(val).map(key => ({ id: key, ...val[key] }));
+          updateUI();
+          updateSyncStatus(true, "RTDB Live");
+        } else {
+          INITIAL_LINKS.forEach(item => {
+            const { id, ...data } = item;
+            set(ref(rtdb, 'links/' + id), data);
+          });
         }
+      }, (err) => {
+        loadLocalStorage();
+      });
+    }
 
-        function renderCategoryChips(categories) {
-            const container = document.getElementById('categoryContainer');
-            container.innerHTML = categories.map(cat => `
-                <button onclick="filterCategory('${escapeHtml(cat)}')" 
-                    class="px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${activeCategory === cat ? 'bg-gradient-to-r from-brand-500 to-accent-500 text-white shadow-lg shadow-brand-500/25' : 'bg-slate-900/80 text-slate-400 border border-slate-800 hover:text-slate-200 hover:bg-slate-800'}">
-                    ${escapeHtml(cat)}
-                </button>
-            `).join('');
-        }
+    function loadLocalStorage() {
+      const local = localStorage.getItem("hub_links");
+      if (local) {
+        linksData = JSON.parse(local);
+      } else {
+        linksData = INITIAL_LINKS;
+        localStorage.setItem("hub_links", JSON.stringify(linksData));
+      }
+      updateUI();
+      updateSyncStatus(false, "Local Offline Mode");
+    }
 
-        window.filterCategory = function(category) {
-            activeCategory = category;
-            renderLinks();
-        }
+    function updateSyncStatus(isLive, label) {
+      const ind = document.getElementById("sync-indicator");
+      const txt = document.getElementById("sync-status");
+      if (isLive) {
+        ind.className = "inline-block w-2 h-2 rounded-full bg-emerald-400";
+        txt.innerText = label;
+      } else {
+        ind.className = "inline-block w-2 h-2 rounded-full bg-amber-400";
+        txt.innerText = label;
+      }
+    }
 
-        window.setViewMode = function(mode) {
-            currentViewMode = mode;
-            document.getElementById('viewGridBtn').className = mode === 'grid' ? 'p-2 rounded-lg text-xs text-brand-400 bg-slate-800 shadow transition' : 'p-2 rounded-lg text-xs text-slate-400 hover:text-slate-200 transition';
-            document.getElementById('viewListBtn').className = mode === 'list' ? 'p-2 rounded-lg text-xs text-brand-400 bg-slate-800 shadow transition' : 'p-2 rounded-lg text-xs text-slate-400 hover:text-slate-200 transition';
-            renderLinks();
-        }
+    // Save/Update database
+    async function saveLinkToDatabase(linkData) {
+      const { id, ...payload } = linkData;
+      if (db) {
+        try {
+          if (id) {
+            await updateDoc(doc(db, "links", id), payload);
+          } else {
+            await addDoc(collection(db, "links"), payload);
+          }
+          return;
+        } catch (e) { console.error(e); }
+      }
+      
+      // Local fallback
+      if (id) {
+        const idx = linksData.findIndex(l => l.id === id);
+        if (idx !== -1) linksData[idx] = linkData;
+      } else {
+        linkData.id = "local-" + Date.now();
+        linksData.push(linkData);
+      }
+      localStorage.setItem("hub_links", JSON.stringify(linksData));
+      updateUI();
+    }
 
-        window.clearSearch = function() {
-            document.getElementById('searchInput').value = '';
-            renderLinks();
-        }
+    async function deleteLinkFromDatabase(id) {
+      if (db) {
+        try {
+          await deleteDoc(doc(db, "links", id));
+          return;
+        } catch(e) { console.error(e); }
+      }
+      linksData = linksData.filter(l => l.id !== id);
+      localStorage.setItem("hub_links", JSON.stringify(linksData));
+      updateUI();
+    }
 
-        window.previewLink = function(url, title, icon) {
-            const modal = document.getElementById('iframeModal');
-            const iframe = document.getElementById('previewIframe');
-            const loader = document.getElementById('iframeLoader');
+    // UI Rendering
+    function updateUI() {
+      renderCategoryFilters();
+      renderLinks();
+      renderAdminList();
+      lucide.createIcons();
+    }
 
-            document.getElementById('iframeTitle').textContent = title;
-            document.getElementById('iframeUrl').textContent = url;
-            document.getElementById('iframeIcon').className = icon;
-            document.getElementById('iframeExternalBtn').href = url;
+    function renderCategoryFilters() {
+      const container = document.getElementById("category-filters");
+      const categories = ["All", ...new Set(linksData.map(l => l.category || "General"))];
+      
+      container.innerHTML = categories.map(cat => `
+        <button class="cat-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition ${currentCategory === cat ? 'bg-indigo-600 text-white' : 'glass text-slate-300 hover:bg-slate-800'}" data-category="${cat}">
+          ${cat}
+        </button>
+      `).join('');
 
-            loader.classList.remove('hidden');
-            iframe.src = url;
-            modal.classList.remove('hidden');
-        }
+      container.querySelectorAll('.cat-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentCategory = btn.getAttribute('data-category');
+          updateUI();
+        });
+      });
+    }
 
-        window.closeIframeModal = function() {
-            const modal = document.getElementById('iframeModal');
-            const iframe = document.getElementById('previewIframe');
-            iframe.src = 'about:blank';
-            modal.classList.add('hidden');
-        }
+    function renderLinks() {
+      const grid = document.getElementById("links-grid");
+      const empty = document.getElementById("empty-state");
 
-        window.copyToClipboard = function(text) {
-            const tempInput = document.createElement('input');
-            tempInput.value = text;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-            showToast('Link copied to clipboard!');
-        }
+      const filtered = linksData.filter(item => {
+        const matchesCategory = currentCategory === "All" || (item.category || "General") === currentCategory;
+        const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                              item.url.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                              (item.desc && item.desc.toLowerCase().includes(searchQuery.toLowerCase()));
+        return matchesCategory && matchesSearch;
+      });
 
-        window.openAdminModal = function() {
-            document.getElementById('adminModal').classList.remove('hidden');
-        }
+      if (filtered.length === 0) {
+        grid.innerHTML = "";
+        empty.classList.remove("hidden");
+        empty.classList.add("flex");
+        return;
+      }
 
-        window.closeAdminModal = function() {
-            document.getElementById('adminModal').classList.add('hidden');
-        }
+      empty.classList.add("hidden");
+      empty.classList.remove("flex");
 
-        window.verifyPasskey = async function() {
-            const passkeyInput = document.getElementById('passkeyInput').value;
-            const errorMsg = document.getElementById('authErrorMsg');
-
-            const hashedInput = await sha256(passkeyInput);
-
-            if (hashedInput === activePasskeyHash) {
-                errorMsg.classList.add('hidden');
-                document.getElementById('adminAuthScreen').classList.add('hidden');
-                document.getElementById('adminContentScreen').classList.remove('hidden');
-                renderAdminLinksList();
-                showToast("Admin Panel Unlocked");
-            } else {
-                errorMsg.classList.remove('hidden');
-            }
-        }
-
-        window.handlePasskeyChange = async function(e) {
-            e.preventDefault();
-            const newKey = document.getElementById('newPasskeyInput').value;
-            if (!newKey) return;
-
-            const newHash = await sha256(newKey);
-            activePasskeyHash = newHash;
-            localStorage.setItem('hub_admin_passkey_hash', newHash);
-
-            document.getElementById('newPasskeyInput').value = '';
-            showToast("Admin Passkey updated successfully!");
-        }
-
-        window.switchAdminTab = function(tab) {
-            const tabAddBtn = document.getElementById('tabAddBtn');
-            const tabManageBtn = document.getElementById('tabManageBtn');
-            const tabSettingsBtn = document.getElementById('tabSettingsBtn');
-            
-            const formTab = document.getElementById('adminTabForm');
-            const manageTab = document.getElementById('adminTabManage');
-            const settingsTab = document.getElementById('adminTabSettings');
-
-            const activeClass = "py-3 px-4 text-xs font-bold border-b-2 border-brand-400 text-brand-400 transition";
-            const inactiveClass = "py-3 px-4 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition";
-
-            tabAddBtn.className = tab === 'add' ? activeClass : inactiveClass;
-            tabManageBtn.className = tab === 'manage' ? activeClass : inactiveClass;
-            tabSettingsBtn.className = tab === 'settings' ? activeClass : inactiveClass;
-
-            formTab.classList.toggle('hidden', tab !== 'add');
-            manageTab.classList.toggle('hidden', tab !== 'manage');
-            settingsTab.classList.toggle('hidden', tab !== 'settings');
-        }
-
-        window.handleFormSubmit = async function(e) {
-            e.preventDefault();
-            
-            const id = document.getElementById('linkIdInput').value;
-            const linkData = {
-                title: document.getElementById('linkTitle').value.trim(),
-                url: document.getElementById('linkUrl').value.trim(),
-                category: document.getElementById('linkCategory').value.trim() || 'Pages',
-                badge: document.getElementById('linkBadge').value.trim(),
-                icon: document.getElementById('linkIcon').value.trim() || 'fa-solid fa-link',
-                description: document.getElementById('linkDesc').value.trim(),
-                active: document.getElementById('linkActive').checked,
-                featured: document.getElementById('linkFeatured').checked,
-                updatedAt: Date.now()
-            };
-
-            try {
-                if (id) {
-                    if (activeStorageMode === 'rtdb') {
-                        await set(ref(rtdb, `links/${id}`), linkData);
-                    } else if (activeStorageMode === 'firestore') {
-                        await updateDoc(doc(fsDb, 'links', id), linkData);
-                    } else {
-                        const idx = linksData.findIndex(l => l.id === id);
-                        if (idx !== -1) linksData[idx] = { ...linksData[idx], ...linkData };
-                        saveLocalState();
-                    }
-                    showToast("Link updated successfully!");
-                } else {
-                    linkData.createdAt = Date.now();
-                    
-                    if (activeStorageMode === 'rtdb') {
-                        const newRef = push(ref(rtdb, 'links'));
-                        await set(newRef, linkData);
-                    } else if (activeStorageMode === 'firestore') {
-                        await addDoc(collection(fsDb, 'links'), linkData);
-                    } else {
-                        linksData.push({ id: 'local_' + Date.now(), ...linkData });
-                        saveLocalState();
-                    }
-                    showToast("New link added to directory!");
-                }
-
-                resetAdminForm();
-                renderLinks();
-                switchAdminTab('manage');
-            } catch(err) {
-                console.error("Save error:", err);
-                showToast("Failed to save link item.", true);
-            }
-        }
-
-        function renderAdminLinksList() {
-            const listContainer = document.getElementById('adminLinksList');
-            if (!listContainer) return;
-
-            if (linksData.length === 0) {
-                listContainer.innerHTML = `<div class="text-xs text-slate-500 text-center py-6">No links found in database.</div>`;
-                return;
-            }
-
-            listContainer.innerHTML = linksData.map(link => `
-                <div class="p-3.5 bg-slate-950 border border-slate-800/80 rounded-xl flex items-center justify-between gap-3">
-                    <div class="flex items-center space-x-3 truncate">
-                        <div class="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-brand-400 shrink-0">
-                            <i class="${escapeHtml(link.icon || 'fa-solid fa-link')} text-xs"></i>
-                        </div>
-                        <div class="truncate">
-                            <div class="text-xs font-bold text-slate-200 truncate flex items-center space-x-2">
-                                <span>${escapeHtml(link.title)}</span>
-                                ${!link.active ? '<span class="text-[9px] px-1.5 py-0.2 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 font-semibold">Hidden</span>' : ''}
-                                ${link.featured ? '<span class="text-[9px] px-1.5 py-0.2 rounded bg-accent-500/20 text-accent-300 border border-accent-500/30 font-semibold">Featured</span>' : ''}
-                            </div>
-                            <div class="text-[11px] font-mono text-slate-500 truncate">${escapeHtml(link.url)}</div>
-                        </div>
-                    </div>
-                    <div class="flex items-center space-x-1 shrink-0">
-                        <button onclick="toggleVisibility('${link.id}')" class="p-2 rounded-lg hover:bg-slate-900 text-slate-400 hover:text-slate-200 text-xs transition" title="Toggle Active">
-                            <i class="fa-solid ${link.active ? 'fa-eye text-emerald-400' : 'fa-eye-slash text-slate-600'}"></i>
-                        </button>
-                        <button onclick="editLink('${link.id}')" class="p-2 rounded-lg hover:bg-slate-900 text-slate-400 hover:text-brand-400 text-xs transition" title="Edit">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </button>
-                        <button onclick="deleteLink('${link.id}')" class="p-2 rounded-lg hover:bg-slate-900 text-slate-400 hover:text-rose-400 text-xs transition" title="Delete">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
+      if (isListView) {
+        grid.className = "space-y-3";
+        grid.innerHTML = filtered.map(link => `
+          <div class="glass-card p-4 rounded-xl flex items-center justify-between gap-4">
+            <div class="flex items-center space-x-3.5 min-w-0">
+              <div class="p-2.5 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                <i data-lucide="${link.icon || 'link'}" class="w-5 h-5"></i>
+              </div>
+              <div class="truncate">
+                <div class="flex items-center space-x-2">
+                  <h3 class="font-semibold text-slate-100 truncate">${link.title}</h3>
+                  ${link.badge ? `<span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">${link.badge}</span>` : ''}
                 </div>
-            `).join('');
+                <p class="text-xs text-slate-400 truncate mt-0.5">${link.desc || link.url}</p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button onclick="openLink('${link.url}', ${link.preview}, '${escapeHtml(link.title)}')" class="px-3.5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition">
+                Open
+              </button>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        grid.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5";
+        grid.innerHTML = filtered.map(link => `
+          <div class="glass-card p-5 rounded-2xl flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex items-start justify-between">
+                <div class="p-3 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                  <i data-lucide="${link.icon || 'link'}" class="w-6 h-6"></i>
+                </div>
+                ${link.badge ? `<span class="px-2.5 py-1 text-[10px] font-bold tracking-wider rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">${link.badge}</span>` : ''}
+              </div>
+              <h3 class="font-bold text-slate-100 mt-4 text-base">${link.title}</h3>
+              <p class="text-xs text-slate-400 mt-1 line-clamp-2">${link.desc || 'Direct file access or target page endpoint.'}</p>
+            </div>
+
+            <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
+              <span class="text-[11px] text-slate-500 uppercase tracking-wider font-medium">${link.category || 'General'}</span>
+              <button onclick="openLink('${link.url}', ${link.preview}, '${escapeHtml(link.title)}')" class="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg bg-indigo-600/90 hover:bg-indigo-500 text-white text-xs font-medium transition shadow-md shadow-indigo-600/20">
+                <span>Launch</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    function renderAdminList() {
+      const container = document.getElementById("admin-links-list");
+      document.getElementById("admin-count").innerText = linksData.length;
+
+      container.innerHTML = linksData.map(link => `
+        <div class="flex items-center justify-between p-3 rounded-lg bg-slate-950 border border-slate-800">
+          <div class="flex items-center space-x-3 min-w-0">
+            <i data-lucide="${link.icon || 'link'}" class="w-4 h-4 text-indigo-400"></i>
+            <div class="truncate">
+              <p class="text-xs font-semibold text-slate-200 truncate">${link.title}</p>
+              <p class="text-[10px] text-slate-500 truncate">${link.url}</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-1">
+            <button onclick="editLink('${link.id}')" class="p-1.5 rounded hover:bg-slate-800 text-slate-400 hover:text-indigo-400 transition">
+              <i data-lucide="edit-2" class="w-4 h-4"></i>
+            </button>
+            <button onclick="deleteLink('${link.id}')" class="p-1.5 rounded hover:bg-slate-800 text-slate-400 hover:text-rose-400 transition">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function escapeHtml(str) {
+      return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    }
+
+    // Link Action
+    window.openLink = function(url, preview, title) {
+      if (preview) {
+        document.getElementById("modal-title").innerText = title;
+        document.getElementById("modal-iframe").src = url;
+        document.getElementById("modal-external-link").href = url;
+        document.getElementById("iframe-modal").classList.remove("hidden");
+      } else {
+        window.open(url, '_blank');
+      }
+    };
+
+    window.editLink = function(id) {
+      const link = linksData.find(l => l.id === id);
+      if (!link) return;
+      document.getElementById("link-id").value = link.id;
+      document.getElementById("link-title").value = link.title;
+      document.getElementById("link-url").value = link.url;
+      document.getElementById("link-category").value = link.category || "";
+      document.getElementById("link-badge").value = link.badge || "";
+      document.getElementById("link-icon").value = link.icon || "";
+      document.getElementById("link-desc").value = link.desc || "";
+      document.getElementById("link-preview").checked = link.preview !== false;
+      document.getElementById("form-heading").innerText = "Edit Link";
+    };
+
+    window.deleteLink = function(id) {
+      if (confirm("Are you sure you want to delete this link?")) {
+        deleteLinkFromDatabase(id);
+      }
+    };
+
+    // Event Listeners Initialization
+    document.addEventListener("DOMContentLoaded", () => {
+      initFirebase();
+
+      // Search & View controls
+      document.getElementById("search-input").addEventListener("input", (e) => {
+        searchQuery = e.target.value;
+        renderLinks();
+      });
+
+      document.getElementById("view-toggle").addEventListener("click", () => {
+        isListView = !isListView;
+        renderLinks();
+        lucide.createIcons();
+      });
+
+      // Modals toggles
+      document.getElementById("close-modal-btn").addEventListener("click", () => {
+        document.getElementById("iframe-modal").classList.add("hidden");
+        document.getElementById("modal-iframe").src = "about:blank";
+      });
+
+      document.getElementById("admin-btn").addEventListener("click", () => {
+        document.getElementById("passkey-modal").classList.remove("hidden");
+        document.getElementById("passkey-input").focus();
+      });
+
+      document.getElementById("close-passkey-btn").addEventListener("click", () => {
+        document.getElementById("passkey-modal").classList.add("hidden");
+      });
+
+      document.getElementById("close-admin-btn").addEventListener("click", () => {
+        document.getElementById("admin-modal").classList.add("hidden");
+      });
+
+      // Passkey form submission
+      document.getElementById("passkey-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const inputVal = document.getElementById("passkey-input").value.trim();
+        const hashedInput = await hashPasskey(inputVal);
+
+        if (hashedInput === ADMIN_PASSKEY_HASH) {
+          document.getElementById("passkey-error").classList.add("hidden");
+          document.getElementById("passkey-modal").classList.add("hidden");
+          document.getElementById("passkey-input").value = "";
+          document.getElementById("admin-modal").classList.remove("hidden");
+        } else {
+          document.getElementById("passkey-error").classList.remove("hidden");
         }
+      });
 
-        window.editLink = function(id) {
-            const link = linksData.find(l => l.id === id);
-            if (!link) return;
-
-            document.getElementById('linkIdInput').value = link.id;
-            document.getElementById('linkTitle').value = link.title || '';
-            document.getElementById('linkUrl').value = link.url || '';
-            document.getElementById('linkCategory').value = link.category || 'Pages';
-            document.getElementById('linkBadge').value = link.badge || '';
-            document.getElementById('linkIcon').value = link.icon || '';
-            document.getElementById('linkDesc').value = link.description || '';
-            document.getElementById('linkActive').checked = link.active !== false;
-            document.getElementById('linkFeatured').checked = link.featured === true;
-
-            document.getElementById('formHeaderTitle').textContent = "Edit Link Entry";
-            document.getElementById('cancelEditBtn').classList.remove('hidden');
-
-            switchAdminTab('add');
-        }
-
-        window.resetAdminForm = function() {
-            document.getElementById('linkForm').reset();
-            document.getElementById('linkIdInput').value = '';
-            document.getElementById('formHeaderTitle').textContent = "Add New Link Entry";
-            document.getElementById('cancelEditBtn').classList.add('hidden');
-        }
-
-        window.toggleVisibility = async function(id) {
-            const link = linksData.find(l => l.id === id);
-            if (!link) return;
-
-            const updatedStatus = !link.active;
-
-            try {
-                if (activeStorageMode === 'rtdb') {
-                    await set(ref(rtdb, `links/${id}/active`), updatedStatus);
-                } else if (activeStorageMode === 'firestore') {
-                    await updateDoc(doc(fsDb, 'links', id), { active: updatedStatus });
-                } else {
-                    link.active = updatedStatus;
-                    saveLocalState();
-                    renderLinks();
-                }
-                showToast(`Link set to ${updatedStatus ? 'Visible' : 'Hidden'}`);
-            } catch(e) {
-                console.error("Toggle error:", e);
-            }
-        }
-
-        window.deleteLink = async function(id) {
-            try {
-                if (activeStorageMode === 'rtdb') {
-                    await remove(ref(rtdb, `links/${id}`));
-                } else if (activeStorageMode === 'firestore') {
-                    await deleteDoc(doc(fsDb, 'links', id));
-                } else {
-                    linksData = linksData.filter(l => l.id !== id);
-                    saveLocalState();
-                    renderLinks();
-                }
-                showToast("Link deleted successfully");
-            } catch(e) {
-                console.error("Delete error:", e);
-                showToast("Failed to delete link", true);
-            }
-        }
-
-        function showToast(msg, isError = false) {
-            const toast = document.getElementById('toast');
-            const toastMsg = document.getElementById('toastMsg');
-            const toastIcon = document.getElementById('toastIcon');
-
-            toastMsg.textContent = msg;
-            toastIcon.className = isError ? "fa-solid fa-triangle-exclamation text-rose-400 text-base" : "fa-solid fa-circle-check text-emerald-400 text-base";
-
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
-
-        function escapeHtml(str) {
-            if (!str) return '';
-            return String(str)
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-
-        window.onload = function() {
-            initFirebase();
+      // Add/Edit Link form submission
+      document.getElementById("link-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const id = document.getElementById("link-id").value;
+        const linkData = {
+          id: id || undefined,
+          title: document.getElementById("link-title").value,
+          url: document.getElementById("link-url").value,
+          category: document.getElementById("link-category").value || "General",
+          badge: document.getElementById("link-badge").value,
+          icon: document.getElementById("link-icon").value || "link",
+          desc: document.getElementById("link-desc").value,
+          preview: document.getElementById("link-preview").checked
         };
-    </script>
+
+        saveLinkToDatabase(linkData);
+        document.getElementById("link-form").reset();
+        document.getElementById("link-id").value = "";
+        document.getElementById("form-heading").innerText = "Add New Link";
+      });
+
+      document.getElementById("reset-form-btn").addEventListener("click", () => {
+        document.getElementById("link-form").reset();
+        document.getElementById("link-id").value = "";
+        document.getElementById("form-heading").innerText = "Add New Link";
+      });
+    });
+  </script>
 </body>
 </html>
